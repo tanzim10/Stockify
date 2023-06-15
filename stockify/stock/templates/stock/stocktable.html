@@ -1,37 +1,115 @@
-<!DOCTYPE html>
-<html>
+{%  extends 'User/base.html' %}
 
-<body>
-    <div class="content-section">
-        <h1>Stock Data</h1>
-        {% if data %}
-            <h1>Stock Data</h1>
-            {% for symbol, val in data.items %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Symbol</th>
-                            <th>Open</th>
-                            <th>High</th>
-                            <th>Low</th>
-                            <th>Close</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody></tbody>
-                        <tr>
-                            <td>{{symbol}}</td>
-                            <td>{{val.0|slice:"1:6"}}</td>
+{% block content %}
+    <section class="py-5 my-5 bg-light">
+        <section class="intro">
+            <div class="container">
+                <div class="pt-5">
+                    <h2>Markets</h2>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="bg-white rounded p-3">
+                                <h5>New Listing</h4>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">APPL</li>
+                                        <li class="col-sm-3">1074322</li>
+                                        <li class="col-sm-3">+3.2%</li>
+                                    </ul>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">MSFT</li>
+                                        <li class="col-sm-3">4562112</li>
+                                        <li class="col-sm-3">-7.26%</li>
+                                    </ul>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">DUMMY</li>
+                                        <li class="col-sm-3">1.892</li>
+                                        <li class="col-sm-3">-30.1242%</li>
+                                    </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="bg-white rounded p-3">
+                                <h5>Trending</h4>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">USDT</li>
+                                        <li class="col-sm-3">4.892</li>
+                                        <li class="col-sm-3">+3.2%</li>
+                                    </ul>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">KWENTA</li>
+                                        <li class="col-sm-3">212.65</li>
+                                        <li class="col-sm-3">-7.26%</li>
+                                    </ul>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">DUMMY</li>
+                                        <li class="col-sm-3">1.892</li>
+                                        <li class="col-sm-3">-30.1242%</li>
+                                    </ul>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="bg-white rounded p-3">
+                                <h5>New Listing</h4>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">USDT</li>
+                                        <li class="col-sm-3">4.892</li>
+                                        <li class="col-sm-3">+3.2%</li>
+                                    </ul>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">KWENTA</li>
+                                        <li class="col-sm-3">212.65</li>
+                                        <li class="col-sm-3">-7.26%</li>
+                                    </ul>
+                                    <ul class="row list-unstyled">
+                                        <li class="col-sm-6">DUMMY</li>
+                                        <li class="col-sm-3">1.892</li>
+                                        <li class="col-sm-3">-30.1242%</li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+    <section>
+        <div class="container my-5">
+            <nav class="navbar bg-body-tertiary mb-5">
+                <div class="container-fluid">
+                    <a class="navbar-brand">Listings</a>
+                    <form method = 'post' class="d-flex" role="search">
+                        {% csrf_token %}
+                        <input class="form-control me-2" type="search" placeholder="Search markets"
+                            aria-label="Search">
+                    </form>
+                </div>
+            </nav>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Pair</th>
+                        <th scope="col">Open</th>
+                        <th scope="col">Close</th>
+                        <th scope="col">High</th>
+                        <th scope="col">Low</th>
+                        <th scope="col">Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for symbol, val in data.items %}
+                    <tr>
+                        <th scope="row">{{symbol}}</th>
+                        <td>{{val.0|slice:"1:6"}}</td>
                             <td>{{val.1}}</td>
                             <td>{{val.2}}</td>
                             <td>{{val.3}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-        {% else %}
-            <p>No data available.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+                            <td>{{val.4}}</td>
+                    </tr>
+                </tbody>
+                {% endfor %} 
+            </table>
+           
+        </div>
+    </section>
+{% endblock %}

@@ -21,10 +21,13 @@ def buy_stock(request):
     error_message = ''
     if request.method =='POST':
         stock_name = request.POST.get('stock_name')
+        print(stock_name)
         amount = int(request.POST.get('amount'))
-        
+        print(amount)
+       #STOCK NAME ERROR CHECK TO be done 
         unit_price = utils.unit_price_fetch(stock_name)
         total_price = unit_price*amount
+        print(total_price)
         user = request.user
         if user.profile.balance >= total_price:
             with transaction.atomic():
@@ -36,13 +39,13 @@ def buy_stock(request):
 
             stock_deposit.save()
             user.profile.adjust_balance(total_price,'decrement')
-            messages.success('Successfully Purchashed!')
+            #messages.success('Successfully Purchashed!')
             return redirect('buy-stock')
         else:
             response_message = 'Not sufficient Balance!'
     else:
-        messages.warning('Please use the approriate method to buy the stock!')
-        return redirect('buy-stock')
+        # messages.warning('Please use the approriate method to buy the stock!')
+        return render(request,'stock/buy_stock.html')
 
     context = {'message':response_message}
 
@@ -66,6 +69,7 @@ def sell_stock(request):
             else:
                 messages.warning('You are not allowed to sell this stock!')
                 return redirect('sell-stock')
+            
         
     return render(request,'stock/sell_stock.html')
 
@@ -87,7 +91,7 @@ def predictions(request):
 
         context ={'valid':valid,
                   'price':pred_price,
-                  'dates':date}
+                  'dates':dates}
         
     
     return render(request,'stock/predictions.html',context)
