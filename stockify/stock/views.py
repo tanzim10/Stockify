@@ -31,7 +31,6 @@ def buy_stock(request):
     if request.method =='POST':
         stock_name = request.POST.get('stock_name')
         amount = int(request.POST.get('amount'))
-        #STOCK NAME ERROR CHECK TO be done 
         unit_price = utils.unit_price_fetch(stock_name)
         total_price = unit_price*amount
         user = request.user
@@ -45,10 +44,12 @@ def buy_stock(request):
 
             stock_deposit.save()
             user.profile.adjust_balance(total_price,'decrement')
-            #messages.success('Successfully Purchashed!')
+            messages.success(request,'Successfully Purchashed!')
             return redirect('buy-stock')
         else:
             response_message = 'Not sufficient Balance!'
+            messages.warning(request,response_message)
+            return redirect('buy-stock')
     # else:
     #     context = {'message':response_message,
     #            'tickers':tickers,
@@ -56,9 +57,8 @@ def buy_stock(request):
     #     # messages.warning('Please use the approriate method to buy the stock!')
     #     return render(request,'stock/buy_stock.html',context)
 
-    context = {'message':response_message,
-               'tickers':tickers,
-               'symbol':'MSFT'}
+    context = {
+               'tickers':tickers}
     
     return render(request,'stock/buy_stock.html',context)
     
@@ -76,10 +76,10 @@ def sell_stock(request):
                 user.profile.adjust_balance(sale_price,'increment')
 
                 stock_deposit.delete()
-
+                messages.success(request,"Successfully sold the stock!")
                 return redirect('sell-stock')
             else:
-                #messages.warning('You are not allowed to sell this stock!')
+                messages.warning(request,'You are not allowed to sell this stock!')
                 return redirect('sell-stock')
             
         
@@ -94,26 +94,23 @@ def predictions(request):
     if request.method == 'POST':
         stock_symbol = str(request.POST.get('symbol'))
         date = str(request.POST.get('date'))
-        print(date)
-        print(stock_symbol)
-        # if not stock_symbol:
-        #     error_mesg = "No stocks found in this name!"
-        #     #messages.warning(error_mesg)
-        #     return redirect('predictions')
-        close, predictions, pred_price = utils.get_predictions(stock_symbol,date)
+        if not stock_symbol:
+            error_mesg = "No stocks found in this name!"
+            messages.warning(request,error_mesg)
+            return redirect('predictions')
+        valid,train,pred_price = utils.get_predictions(stock_symbol,date)
         dates = utils.get_dates(date)
-        print(close)
-        print(predictions)
-        print(dates)
         pred_price = np.array(pred_price)
         pred_value = pred_price[0][0]
+        chart = utils.get_plot(valid,train)
+        predict_date = utils.pred_date(date)
 
 
-        context ={'close':close,
-                'predictions':predictions,
+        context ={'chart':chart,
                   'price':pred_value,
-                  'dates':dates,
-                  'tickers':tickers}
+                  'tickers':tickers,
+                  'pred_date':predict_date,
+                  'stock_symbol':stock_symbol}
         return render(request,'stock/predictions.html',context)
             
 

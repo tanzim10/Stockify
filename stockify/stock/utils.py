@@ -11,6 +11,9 @@ from keras.layers import Dense,LSTM
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime, timedelta,date
+import base64
+from io import BytesIO
+
 
 
 
@@ -18,7 +21,7 @@ def stock_fetch_api(symbols):
     stock_data = {}
     for symbol in symbols:
         stock = yf.Ticker(symbol)
-        data = stock.history(period="1d")
+        data = stock.history(period='1d')
         stock_data[symbol] = data.to_dict(orient='list')
     
     datas ={}
@@ -133,28 +136,59 @@ def get_predictions(symbol,date_end):
     pred_price = model.predict(X_test)
     #undo the scaling
     pred_price = scaler.inverse_transform(pred_price)
-    valid = valid.to_dict(orient='list')
-    close = valid['Close']
-    pred = valid['Predictions']
 
-    return close,pred, pred_price
+    return valid,train, pred_price
 
 def get_dates(end_dates):
     date_format = "%Y-%m-%d"
     datetime_obj = datetime.strptime(end_dates, date_format)
-    start_date = date(2012,1,1)
-    end_date = datetime.date(datetime_obj)
+    start_date = date(2012, 1, 1)
+    end_date = datetime_obj.date()
 
     current_date = start_date
-    date_strings = []
+    years = []
 
     while current_date <= end_date:
-        date_strings.append(current_date.strftime('%Y-%m-%d'))
+        years.append(current_date.year)
         current_date += timedelta(days=1)
 
-    # Print the date strings
-    for date_str in date_strings:
-        print(date_str)
+    return years
+
+def get_graph():
+    buffer = BytesIO()
+    plt.savefig(buffer, format ='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    graph = base64.b64encode(image_png)
+    graph = graph.decode('utf-8')
+    buffer.close()
+
+    return graph
+
+def get_plot(valid,train):
+    plt.switch_backend('AGG')
+    plt.figure(figsize=(15,6))
+    plt.title('Model')
+    plt.xlabel('Date', fontsize = 18)
+    plt.ylabel('Close Price USD $')
+    plt.plot(train['Close'])
+    plt.plot(valid[['Close','Predictions']])
+    plt.xticks(rotation =45)
+    plt.legend(['Train','Val','Predictions'], loc ='upper right')
+    plt.tight_layout()
+    graph = get_graph()
+
+    return graph
+
+def pred_date(end_date):
+
+    date_format = "%Y-%m-%d"
+    date_obj = datetime.strptime(end_date, date_format)
+    next_date = date_obj + timedelta(days=1)
+    next_date_string = next_date.strftime(date_format)
+
+    return next_date_string
+
 
 
 
