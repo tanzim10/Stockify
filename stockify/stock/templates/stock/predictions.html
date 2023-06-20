@@ -1,0 +1,180 @@
+{%  extends 'User/base.html' %}
+
+{% block content %}
+<section class="py-5 -5 bg-light">
+    <section class="intro">
+        <div class="container">
+            <div class="pt-5">
+                <h2>Markets</h2>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="bg-white rounded p-3">
+                            <h5>New Listing</h4>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">USDT</li>
+                                    <li class="col-sm-3">4.892</li>
+                                    <li class="col-sm-3">+3.2%</li>
+                                </ul>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">KWENTA</li>
+                                    <li class="col-sm-3">212.65</li>
+                                    <li class="col-sm-3">-7.26%</li>
+                                </ul>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">DUMMY</li>
+                                    <li class="col-sm-3">1.892</li>
+                                    <li class="col-sm-3">-30.1242%</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="bg-white rounded p-3">
+                            <h5>New Listing</h4>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">USDT</li>
+                                    <li class="col-sm-3">4.892</li>
+                                    <li class="col-sm-3">+3.2%</li>
+                                </ul>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">KWENTA</li>
+                                    <li class="col-sm-3">212.65</li>
+                                    <li class="col-sm-3">-7.26%</li>
+                                </ul>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">DUMMY</li>
+                                    <li class="col-sm-3">1.892</li>
+                                    <li class="col-sm-3">-30.1242%</li>
+                                </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="bg-white rounded p-3">
+                            <h5>New Listing</h4>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">USDT</li>
+                                    <li class="col-sm-3">4.892</li>
+                                    <li class="col-sm-3">+3.2%</li>
+                                </ul>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">KWENTA</li>
+                                    <li class="col-sm-3">212.65</li>
+                                    <li class="col-sm-3">-7.26%</li>
+                                </ul>
+                                <ul class="row list-unstyled">
+                                    <li class="col-sm-6">DUMMY</li>
+                                    <li class="col-sm-3">1.892</li>
+                                    <li class="col-sm-3">-30.1242%</li>
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+<section>
+    <div class="container my-5">
+        <h4>Predictions for the given stock</h4>
+        <div class="border p-4 rounded shadow-sm">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="mb-2">ID</label>
+                            <div class="row g-2">
+                                <div class="row g-2">
+                                    <div class="col-sm-6">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="symbol" name="symbol">
+                                                <option selected="">Select symbol</option>
+                                                {% for ticker in tickers %}
+                                                <option value="{{ticker}}">{{ticker}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <label for="floatingSelectGrid">Select stock symbol</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-floating">
+                                            <input type="date" class="form-control" id="date" name="date">
+                                            <label for="date">Date</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-2 pt-4">
+                        <button type="submit" class="btn btn-dark mt-3 py-3 px-5 w-100">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="border p-4 rounded shadow-sm">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block jscontent %}
+    <canvas id="myChart" width="400" height="1000"></canvas>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script>
+        $(document).ready(function(){
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [2012,2013,2014,2015,2016,2017,2018,2019,2020,2021],
+                datasets: [{
+                    label: 'Close',
+                    data: "{{ close }}",
+                    //data: ['123', '323'],
+                    backgroundColor: [
+                    'rgba(245, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+
+                    borderColor: ['rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                ],
+                    borderWidth: 1
+                }, {
+                    label: 'Predictions',
+                    data: "{{predictions}}",
+                    //data:['321', '434'],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+
+                    },
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+
+    });
+        </script>
+{% endblock %}

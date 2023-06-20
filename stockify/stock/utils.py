@@ -10,7 +10,8 @@ from keras.models import Sequential
 from keras.layers import Dense,LSTM
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-import datetime
+from datetime import datetime, timedelta,date
+
 
 
 def stock_fetch_api(symbols):
@@ -133,13 +134,15 @@ def get_predictions(symbol,date_end):
     #undo the scaling
     pred_price = scaler.inverse_transform(pred_price)
     valid = valid.to_dict(orient='list')
+    close = valid['Close']
+    pred = valid['Predictions']
 
-    return valid , pred_price
+    return close,pred, pred_price
 
 def get_dates(end_dates):
     date_format = "%Y-%m-%d"
     datetime_obj = datetime.strptime(end_dates, date_format)
-    start_date = datetime.date(2012, 1, 1)
+    start_date = date(2012,1,1)
     end_date = datetime.date(datetime_obj)
 
     current_date = start_date
@@ -147,11 +150,12 @@ def get_dates(end_dates):
 
     while current_date <= end_date:
         date_strings.append(current_date.strftime('%Y-%m-%d'))
-        current_date += datetime.timedelta(days=1)
+        current_date += timedelta(days=1)
 
     # Print the date strings
     for date_str in date_strings:
         print(date_str)
+
 
 
 

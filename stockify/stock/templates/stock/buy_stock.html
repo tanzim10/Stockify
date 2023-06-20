@@ -1,6 +1,6 @@
 {%  extends 'User/base.html' %}
 {% block content %}
-    <section class="py-5 my-5 bg-light">
+    <section class="py-5 mb-5 bg-light">
         <section class="intro">
             <div class="container">
                 <div class="pt-5">
@@ -86,9 +86,9 @@
                                         <div class="form-floating">
                                             <select class="form-select" id="stock_name" name="stock_name">
                                                 <option selected="">Select Name</option>
-                                                <option value="AAPL">AAPL</option>
-                                                <option value="2">Two</option>
-                                                <option value="3">Three</option>
+                                                {% for ticker in tickers %}
+                                                <option value="{{ticker}}">{{ticker}}</option>
+                                                {% endfor %}
                                             </select>
                                             <label for="floatingSelectGrid">Select a stock name</label>
                                         </div>
@@ -108,7 +108,7 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                <label for="pay" class="mb-2">Receive</label>
+                                <label for="pay" class="mb-2">Total Price</label>
                                 <div>
                                     <strong id="total_amount"
                                         class="bg-light py-3 w-75 rounded border text-left px-3 d-inline-block">123</strong>
@@ -122,5 +122,6 @@
                 </form>
             </div>
         </div>
+        
     </section>
 {% endblock %}

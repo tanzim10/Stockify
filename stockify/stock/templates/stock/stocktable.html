@@ -1,7 +1,7 @@
 {%  extends 'User/base.html' %}
 
 {% block content %}
-    <section class="py-5 my-5 bg-light">
+    <section class="py-5 mb-5 bg-light">
         <section class="intro">
             <div class="container">
                 <div class="pt-5">
@@ -79,13 +79,13 @@
                     <a class="navbar-brand">Listings</a>
                     <form method = 'post' class="d-flex" role="search">
                         {% csrf_token %}
-                        <input class="form-control me-2" type="search" placeholder="Search markets"
+                        <input class="form-control me-2" id ="inputs" type="search" onkeyup="myFunction()" placeholder="Search markets"
                             aria-label="Search">
                     </form>
                 </div>
             </nav>
             
-            <table class="table">
+            <table class="table" id ="tables">
                 <thead>
                     <tr>
                         <th scope="col">Pair</th>
@@ -112,4 +112,27 @@
            
         </div>
     </section>
+    <script>
+        function myFunction() {
+          // Declare variables
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("inputs");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("tables");
+          tr = table.getElementsByTagName("tr");
+        
+          // Loop through all table rows, and hide those who don't match the search query
+          for (i = 1; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("th")[0];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }
+          }
+        }
+        </script>
 {% endblock %}

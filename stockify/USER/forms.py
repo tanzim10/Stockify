@@ -16,7 +16,8 @@ class CreateUserForm(UserCreationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields =['address','phone_number','bio','image']
+        fields =['address','phone_number','bio','balance','image']
+
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'autofocus':True,'class': 'form-control'}))
@@ -39,5 +40,5 @@ class Update_ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        fields =['phone_number','address','bio','image']
+        fields =['phone_number','address','bio','balance','image']
 
