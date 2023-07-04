@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'stock.apps.StockConfig',
+    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -138,3 +140,21 @@ LOGIN_URL = 'login'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL ='/media/'
 
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
+ALLOWED_HOSTS = ['127.0.0.1']
+CORS_ALLOW_HEADERS = [
+    'Accept',
+    'Authorization',
+    'Content-Type',
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1',
+]

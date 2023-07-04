@@ -1,5 +1,6 @@
 {%  extends 'User/base.html' %}
 {% block content %}
+    
     <section class="py-5 mb-5 bg-light">
         <section class="intro">
             <div class="container">
@@ -110,8 +111,8 @@
                             <div class="form-group">
                                 <label for="pay" class="mb-2">Total Price</label>
                                 <div>
-                                    <strong id="total_amount"
-                                        class="bg-light py-3 w-75 rounded border text-left px-3 d-inline-block">123</strong>
+                                    <strong id="total_price"
+                                        class="bg-light py-3 w-75 rounded border text-left px-3 d-inline-block"></strong>
                                 </div>
                             </div>
                         </div>
@@ -124,4 +125,20 @@
         </div>
         
     </section>
+ 
+{% endblock %}
+
+{% block jscontent %}
+<script>
+
+var amount = document.getElementById('amount');
+var total_price = document.getElementById('total_price');
+var tickers = 334.12;
+amount.addEventListener('change', function (e) {
+    var amountValue = e.target.value;
+    total_price.innerHTML = (amountValue * tickers).toFixed(2);
+});
+
+</script>
+
 {% endblock %}

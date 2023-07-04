@@ -7,6 +7,7 @@ from django.contrib import messages
 from . import utils
 from django.db import transaction
 import numpy as np
+from django.http import JsonResponse
 # Create your views here.
 
 def stock_fetch(request):
@@ -28,6 +29,7 @@ def buy_stock(request):
     tickers =[]
     for nasdq in nasdqs:
         tickers.append(str(nasdq.symbol))
+    unit_prices = utils.unit_price_fetch('MSFT')
     if request.method =='POST':
         stock_name = request.POST.get('stock_name')
         amount = int(request.POST.get('amount'))
@@ -58,7 +60,8 @@ def buy_stock(request):
     #     return render(request,'stock/buy_stock.html',context)
 
     context = {
-               'tickers':tickers}
+               'tickers':tickers,
+               'unit_prices':unit_prices}
     
     return render(request,'stock/buy_stock.html',context)
     
@@ -119,11 +122,25 @@ def predictions(request):
 
 
 
-       
+def get_deposit_id(request):
+    stock_id = StockDeposit.objects.filter(user=request.user)
+    context ={'stock_id':stock_id}
+    return render(request,'stock/deposits.html',context)
 
 
-        
-        
+def stock_list(request):
+    data ={}
+    if request.method =="POST":
+        stock_name = request.POST.get('stock_name')
+        amount = int(request.POST.get('amount'))
+        unitprice = utils.unit_price_fetch(stock_name)
+        total_price = unitprice*amount
+        data = {'total_price':total_price}
+        return JsonResponse(data)
+    
+    return JsonResponse(data, safe=False)
+
+
 
         
 
@@ -136,3 +153,21 @@ def predictions(request):
 
     
 
+"""
+  $('#amount').on('change',function() {
+        var stock_name = $('#stock_name').val();
+        var amount = $('#amount').val();
+        $.ajax({
+            method:"POST",
+            url: 'http://127.0.0.1:8000/stock/total_price/',  // Assuming your Django view is located here
+            data: {
+                'stock_name':stock_name,
+                'amount': amount
+            },
+            dataType: 'json',
+            success: function(data) {
+                $('#total_price').html(data.total_price);
+            }
+        });
+    });
+"""
