@@ -11,15 +11,21 @@ from django.http import JsonResponse
 # Create your views here.
 
 def stock_fetch(request):
+    """
+    Fetch stock data and render it in a template.
+
+    :param request: The HTTP request object.
+    :return: Rendered template with stock data.
+    """
+    
     nasdqs = StockList.objects.all()
-    tickers =[]
-    for nasdq in nasdqs:
-        tickers.append(str(nasdq.symbol))
+    tickers = [str(nasdq.symbol) for nasdq in nasdqs]
+    
     data = utils.stock_fetch_api(tickers)
 
-    context = {'data':data} 
+    context = {'data': data}
 
-    return render(request,'stock/stocktable.html',context)
+    return render(request, 'stock/stocktable.html', context)
 
 @login_required
 def buy_stock(request):
@@ -89,6 +95,42 @@ def sell_stock(request):
     return render(request,'stock/sell_stock.html',context)
 
 def predictions(request):
+    """
+    Renders the stock predictions based on user input.
+
+    This view function renders the stock predictions by:
+    1. Fetching the available stock tickers from the `StockList` model.
+    2. Accepting user input for stock symbol and date via POST request.
+    3. Utilizing a utility function to get stock predictions based on the input symbol and date.
+    4. Displaying the prediction, along with relevant information, on the rendered template.
+
+    Parameters:
+    -----------
+    request : HttpRequest
+        The Django request object.
+
+    Returns:
+    --------
+    HttpResponse
+        Rendered HTML page.
+
+    Template:
+    ---------
+    stock/predictions.html
+
+    Context Variables:
+    ------------------
+    - tickers: List of available stock symbols.
+    - chart: Chart representation of stock data.
+    - price: Predicted stock price.
+    - pred_date: Predicted date.
+    - stock_symbol: The symbol of the stock that's being predicted.
+
+    Raises:
+    -------
+    Warning
+        If no stocks are found with the given name.
+    """
     context ={}
     nasdqs = StockList.objects.all()
     tickers =[]
